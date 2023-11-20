@@ -1248,24 +1248,24 @@ def gdtot(url):
     token_url = etree.HTML(res.content).xpath(
         "//a[contains(@class,'inline-flex items-center justify-center')]/@href")
     if not token_url:
+        try:
+            url = cget('GET', url).url
+            p_url = urlparse(url)
+            res = cget(
+                "GET", f"{p_url.scheme}://{p_url.hostname}/ddl/{url.split('/')[-1]}")
+        except Exception as e:
+            return (f'ERROR: {e.__class__.__name__}')
+        if (drive_link := re.findall(r"myDl\('(.*?)'\)", res.text)) and "drive.google.com" in drive_link[0]:
+            return drive_link[0]
+        else:
+            return (
+                 'ERROR: Drive Link not found, Try in your broswer')
+    token_url = token_url[0]
     try:
-        url = cget('GET', url).url
-        p_url = urlparse(url)
-        res = cget(
-            "GET", f"{p_url.scheme}://{p_url.hostname}/ddl/{url.split('/')[-1]}")
+        token_page = cget('GET', token_url)
     except Exception as e:
-        return (f'ERROR: {e.__class__.__name__}')
-    if (drive_link := re.findall(r"myDl\('(.*?)'\)", res.text)) and "drive.google.com" in drive_link[0]:
-        return drive_link[0]
-    else:
-        return (
-            'ERROR: Drive Link not found, Try in your broswer')
-token_url = token_url[0]
-try:
-    token_page = cget('GET', token_url)
-except Exception as e:
-    return (
-        f'ERROR: {e.__class__.__name__} with {token_url}')
+         return (
+              f'ERROR: {e.__class__.__name__} with {token_url}')
 path = re.findall('\("(.*?)"\)', token_page.text)
 if not path:
     return ('ERROR: Cannot bypass this')
