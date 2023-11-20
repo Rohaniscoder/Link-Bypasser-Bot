@@ -1255,7 +1255,7 @@ def gdtot(url):
                 "GET", f"{p_url.scheme}://{p_url.hostname}/ddl/{url.split('/')[-1]}")
         except Exception as e:
             return (f'ERROR: {e.__class__.__name__}')
-        if (drive_link := re.findall(r"myDl\('(.*?)'\)", res.text)) and "drive.google.com" in drive_link[0]:
+        if (drive_link = re.findall(r"myDl\('(.*?)'\)", res.text)) and "drive.google.com" in drive_link[0]:
             return drive_link[0]
         else:
             return (
