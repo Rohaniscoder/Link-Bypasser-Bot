@@ -267,8 +267,9 @@ def hxfile(url: str) -> str:
 		response = sess.post(url, headers=headers, data=data)
 		soup = BeautifulSoup(response,"html.parser")
 
-		if (btn := soup.find(class_="btn btn-dow")):
-			return btn["href"]
+		btn = soup.find(class_="btn btn-dow")
+                if btn:
+                   return btn["href"]
 		if (unique := soup.find(id="uniqueExpirylink")):
 			return unique["href"]
 		
